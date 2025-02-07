@@ -1,6 +1,8 @@
 package morphoblue
 
-import "github.com/holiman/uint256"
+import (
+	"github.com/holiman/uint256"
+)
 
 // WadDivToZero returns (x * WAD) / y, using signed arithmetic
 func WadDivToZero(z *uint256.Int, x *uint256.Int, y *uint256.Int) *uint256.Int {
@@ -10,7 +12,7 @@ func WadDivToZero(z *uint256.Int, x *uint256.Int, y *uint256.Int) *uint256.Int {
 }
 
 func WadMulUp(z *uint256.Int, x *uint256.Int, y *uint256.Int) (*uint256.Int, error) {
-	_, err := MulDivRoundingUp(z, z, x, WAD)
+	_, err := MulDivRoundingUp(z, x, y, WAD)
 	return z, err
 }
 

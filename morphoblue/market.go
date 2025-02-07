@@ -1,6 +1,8 @@
 package morphoblue
 
-import "github.com/holiman/uint256"
+import (
+	"github.com/holiman/uint256"
+)
 
 func GetUtilization(totalSupplyAssets, totalBorrowAssets *uint256.Int) (*uint256.Int, error) {
 	z := new(uint256.Int)
@@ -15,14 +17,13 @@ func GetUtilization(totalSupplyAssets, totalBorrowAssets *uint256.Int) (*uint256
 }
 
 func GetSupplyRate(borrowRate, utilization, fee *uint256.Int) (*uint256.Int, error) {
-	z := new(uint256.Int)
-	borrowRateWithoutFee, err := WadMulUp(z, borrowRate, utilization)
+	borrowRateWithoutFee, err := WadMulUp(new(uint256.Int), borrowRate, utilization)
 	if err != nil {
 		return nil, err
 	}
 	w := new(uint256.Int).Set(WAD)
 	w = w.Sub(w, fee)
-
+	z := new(uint256.Int)
 	ans, err := WadMulUp(z, borrowRateWithoutFee, w)
 	if err != nil {
 		return nil, err
