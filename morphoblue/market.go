@@ -2,7 +2,8 @@ package morphoblue
 
 import "github.com/holiman/uint256"
 
-func GetUtilization(z *uint256.Int, totalSupplyAssets, totalBorrowAssets *uint256.Int) (*uint256.Int, error) {
+func GetUtilization(totalSupplyAssets, totalBorrowAssets *uint256.Int) (*uint256.Int, error) {
+	z := new(uint256.Int)
 	if totalSupplyAssets.IsZero() {
 		if !totalBorrowAssets.IsZero() {
 			return z.Set(&MaxUint256), nil
@@ -13,10 +14,18 @@ func GetUtilization(z *uint256.Int, totalSupplyAssets, totalBorrowAssets *uint25
 	return MulDiv(z, totalBorrowAssets, WAD, totalSupplyAssets)
 }
 
-func MulDiv(z *uint256.Int, a, b, denominator *uint256.Int) (*uint256.Int, error) {
-	if denominator.IsZero() {
-		return nil, ErrorDivideByZero
+func GetSupplyRate(borrowRate, utilization, fee *uint256.Int) (*uint256.Int, error) {
+	z := new(uint256.Int)
+	borrowRateWithoutFee, err := WadMulUp(z, borrowRate, utilization)
+	if err != nil {
+		return nil, err
 	}
-	z.MulDivOverflow(a, b, denominator)
-	return z, nil
+	w := new(uint256.Int).Set(WAD)
+	w = w.Sub(w, fee)
+
+	ans, err := WadMulUp(z, borrowRateWithoutFee, w)
+	if err != nil {
+		return nil, err
+	}
+	return ans, nil
 }
