@@ -49,3 +49,20 @@ func MulDivRoundingUp(z *uint256.Int, a, b, denominator *uint256.Int) (*uint256.
 	}
 	return z, nil
 }
+
+func WadTaylorCompounded(z *uint256.Int, x *uint256.Int, n *uint256.Int) *uint256.Int {
+	termOne := z.Mul(x, n)
+
+	scratch := new(uint256.Int).Add(WAD, WAD)
+
+	termTwo := new(uint256.Int)
+	termTwo.MulDivOverflow(termOne, termOne, scratch)
+
+	termThree := new(uint256.Int)
+	termThree.MulDivOverflow(termOne, termTwo, scratch.Add(scratch, WAD))
+
+	termOne.Add(termOne, termTwo)
+	termOne.Add(termOne, termThree)
+
+	return termOne
+}
