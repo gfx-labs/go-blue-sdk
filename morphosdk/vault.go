@@ -34,16 +34,16 @@ type VaultMarketPublicAllocatorConfig struct {
 
 // VaultMarketConfig represents the configuration for a market in a vault
 type VaultMarketConfig struct {
-	Vault                 common.Address                     `json:"vault"`
-	MarketId              common.Hash                        `json:"marketId"`
-	Cap                   uint256.Int                        `json:"cap"`
-	PendingCap            PendingTimelock                    `json:"pendingCap"`
-	RemovableAt           uint256.Int                        `json:"removableAt"`
-	Enabled               bool                               `json:"enabled"`
+	Vault                 common.Address                    `json:"vault"`
+	MarketId              common.Hash                       `json:"marketId"`
+	Cap                   uint256.Int                       `json:"cap"`
+	PendingCap            PendingTimelock                   `json:"pendingCap"`
+	RemovableAt           uint256.Int                       `json:"removableAt"`
+	Enabled               bool                              `json:"enabled"`
 	PublicAllocatorConfig *VaultMarketPublicAllocatorConfig `json:"publicAllocatorConfig,omitempty"`
 }
 
-// VaultToken represents the ERC20 token properties of a vault
+// VaultToken represents the vault token (with possible vault balance)
 type VaultToken struct {
 	Address     common.Address `json:"address"`
 	Name        string         `json:"name"`
@@ -53,10 +53,12 @@ type VaultToken struct {
 	TotalAssets uint256.Int    `json:"totalAssets"`
 }
 
-// Vault represents a Morpho vault
+// Vault represents a Morpho vault with both token and vault-specific properties
 type Vault struct {
-	Name                  string                      `json:"name"`
-	Symbol                string                      `json:"symbol"`
+	// Token properties
+	Token VaultToken `json:"token"`
+
+	// Vault-specific properties
 	Owner                 common.Address              `json:"owner"`
 	Curator               common.Address              `json:"curator"`
 	Guardian              common.Address              `json:"guardian"`

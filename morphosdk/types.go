@@ -1,11 +1,5 @@
 package morphosdk
 
-import (
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/holiman/uint256"
-)
-
-
 // TransactionType represents the type of transaction
 type TransactionType string
 
@@ -22,9 +16,8 @@ const (
 type CapacityLimitReason string
 
 const (
-	CapacityLimitReasonLiquidityLimit CapacityLimitReason = "liquidityLimit"
+	CapacityLimitReasonLiquidityLimit   CapacityLimitReason = "liquidityLimit"
 	CapacityLimitReasonUtilizationLimit CapacityLimitReason = "utilizationLimit"
-	CapacityLimitReasonSupplyCapLimit CapacityLimitReason = "supplyCapLimit"
-	CapacityLimitReasonBorrowCapLimit CapacityLimitReason = "borrowCapLimit"
+	CapacityLimitReasonSupplyCapLimit   CapacityLimitReason = "supplyCapLimit"
+	CapacityLimitReasonBorrowCapLimit   CapacityLimitReason = "borrowCapLimit"
 )
-
