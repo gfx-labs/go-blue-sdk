@@ -53,10 +53,16 @@ type VaultToken struct {
 	TotalAssets uint256.Int    `json:"totalAssets"`
 }
 
+type VaultConfig struct {
+	DecimalsOffset int            `json:"decimalsOffset"`
+	Asset          common.Address `json:"asset"`
+}
+
 // Vault represents a Morpho vault with both token and vault-specific properties
 type Vault struct {
 	// Token properties
-	Token VaultToken `json:"token"`
+	VaultToken
+	VaultConfig
 
 	// Vault-specific properties
 	Owner                 common.Address              `json:"owner"`
