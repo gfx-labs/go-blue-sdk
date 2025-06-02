@@ -35,19 +35,16 @@ func MulDivRoundingUp(z *uint256.Int, a, b, denominator *uint256.Int) (*uint256.
 	if denominator.IsZero() {
 		return nil, ErrorDivideByZero
 	}
-	if !z.MulMod(a, b, denominator).IsZero() {
-		_, err := MulDiv(z, a, b, denominator)
-		if err != nil {
-			return nil, err
-		}
+	_, err := MulDiv(z, a, b, denominator)
+	if err != nil {
+		return nil, err
+	}
+	scratch := new(uint256.Int)
+	if !scratch.MulMod(a, b, denominator).IsZero() {
 		_, over := z.AddOverflow(z, One)
 		if over {
 			return nil, ErrorUint256Overflow
 		}
-	}
-	_, err := MulDiv(z, a, b, denominator)
-	if err != nil {
-		return nil, err
 	}
 	return z, nil
 }
