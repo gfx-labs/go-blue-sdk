@@ -1,7 +1,6 @@
 package morphoblue
 
 import (
-	"errors"
 	"math"
 
 	"github.com/holiman/uint256"
@@ -14,9 +13,4 @@ var (
 	MaxUint160       = uint256.Int{math.MaxUint64, math.MaxUint64, math.MaxUint32, 0}
 	MaxUint128       = uint256.Int{math.MaxUint64, math.MaxUint64, 0, 0}
 	One              = uint256.NewInt(1)
-)
-
-var (
-	ErrorDivideByZero    = errors.New("divide by zero")
-	ErrorUint256Overflow = errors.New("uint256 overflow")
 )
