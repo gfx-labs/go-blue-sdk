@@ -16,13 +16,7 @@ type VaultV2Allocation struct {
 
 // VaultV2 represents a Morpho Vault V2 with adapter-based allocation.
 type VaultV2 struct {
-	// IToken fields
-	Address       common.Address `json:"address"`
-	Name          string         `json:"name"`
-	Symbol        string         `json:"symbol"`
-	Decimals      uint8          `json:"decimals"`
-	Price         *uint256.Int   `json:"price,omitempty"`
-	Eip5267Domain *Eip5267Domain `json:"eip5267Domain,omitempty"`
+	Token
 
 	// IVaultV2 fields
 	Asset         common.Address `json:"asset"`
@@ -30,8 +24,10 @@ type VaultV2 struct {
 
 	// TotalAssets is the total assets including virtually accrued interest.
 	TotalAssets uint256.Int `json:"totalAssets"`
-	// RawTotalAssets is the stored _totalAssets excluding virtually accrued interest.
-	// This is the on-chain storage value used for interest accrual and fee calculations.
+	// RawTotalAssets is the on-chain storage slot value excluding virtually accrued
+	// interest, used for interest accrual and fee calculations. The JSON key
+	// "_totalAssets" (with leading underscore) matches the TS SDK's IVaultV2
+	// interface and the Solidity storage variable name.
 	RawTotalAssets uint256.Int `json:"_totalAssets"`
 	TotalSupply    uint256.Int `json:"totalSupply"`
 

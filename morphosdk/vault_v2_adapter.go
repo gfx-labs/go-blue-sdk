@@ -36,12 +36,12 @@ type VaultV2Adapter struct {
 type VaultV2MorphoMarketV1AdapterV2 struct {
 	VaultV2Adapter
 
-	AdaptiveCurveIrm common.Address              `json:"adaptiveCurveIrm"`
-	MarketIds        []common.Hash               `json:"marketIds"`
-	SupplyShares     map[common.Hash]uint256.Int `json:"supplyShares"`
+	AdaptiveCurveIrm common.Address               `json:"adaptiveCurveIrm"`
+	MarketIds        []common.Hash                `json:"marketIds"`
+	SupplyShares     map[common.Hash]*uint256.Int `json:"supplyShares"`
 	// Go-only enrichment fields; not present in TS IVaultV2MorphoMarketV1AdapterV2
-	Morpho       common.Address              `json:"morpho,omitempty"`
-	SupplyAssets map[common.Hash]uint256.Int `json:"supplyAssets,omitempty"`
+	Morpho       common.Address               `json:"morpho,omitempty"`
+	SupplyAssets map[common.Hash]*uint256.Int `json:"supplyAssets,omitempty"`
 }
 
 // VaultV2MorphoMarketV1Adapter is the v1 adapter that allocates to Morpho Blue markets.
@@ -84,6 +84,7 @@ func (e VaultV2AdapterEntry) MarshalJSON() ([]byte, error) {
 }
 
 func (e *VaultV2AdapterEntry) UnmarshalJSON(data []byte) error {
+	*e = VaultV2AdapterEntry{} // reset all fields to enforce single-variant invariant
 	var peek struct {
 		Type VaultV2AdapterType `json:"type"`
 	}

@@ -22,6 +22,6 @@ const (
 	CapacityLimitReasonBorrowCapLimit   CapacityLimitReason = "borrowCapLimit"
 
 	// V2 vault capacity limits
-	CapacityLimitReasonVaultV2AbsoluteCap CapacityLimitReason = "VaultV2_AbsoluteCap"
-	CapacityLimitReasonVaultV2RelativeCap CapacityLimitReason = "VaultV2_RelativeCap"
+	CapacityLimitReasonVaultV2AbsoluteCapLimit CapacityLimitReason = "vaultV2AbsoluteCapLimit"
+	CapacityLimitReasonVaultV2RelativeCapLimit CapacityLimitReason = "vaultV2RelativeCapLimit"
 )
