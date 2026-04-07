@@ -18,12 +18,10 @@ type GlobalConfig struct {
 
 // VaultUser represents a user's interaction with a vault
 type VaultUser struct {
-	Address       common.Address `json:"address"`
-	Vault         common.Address `json:"vault"`
-	IsAuthorized  bool           `json:"isAuthorized"`
-	AllowedShares uint256.Int    `json:"allowedShares"`
-	AllowedAssets uint256.Int    `json:"allowedAssets"`
-	Shares        uint256.Int    `json:"shares"`
+	User        common.Address `json:"user"`
+	Vault       common.Address `json:"vault"`
+	IsAllocator bool           `json:"isAllocator"`
+	Allowance   uint256.Int    `json:"allowance"`
 }
 
 // InputSimulationState represents the input state for simulations
@@ -41,6 +39,6 @@ type InputSimulationState struct {
 	VaultUsers         map[common.Address]map[common.Address]*VaultUser      `json:"vaultUsers,omitempty"`
 
 	// V2 vault state
-	VaultV2s        map[common.Address]*VaultV2        `json:"vaultV2s,omitempty"`
-	VaultV2Adapters map[common.Address]*VaultV2Adapter `json:"vaultV2Adapters,omitempty"`
+	VaultV2s        map[common.Address]*VaultV2             `json:"vaultV2s,omitempty"`
+	VaultV2Adapters map[common.Address]*VaultV2AdapterEntry `json:"vaultV2Adapters,omitempty"`
 }
