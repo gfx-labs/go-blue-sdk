@@ -18,11 +18,6 @@ const (
 	VaultV2AdapterTypeUnknown                 VaultV2AdapterType = "Unknown"
 )
 
-// IVaultV2Adapter is implemented by all V2 vault adapter types.
-type IVaultV2Adapter interface {
-	baseAdapter() *VaultV2Adapter
-}
-
 // VaultV2Adapter represents the base fields shared by all V2 vault adapters.
 type VaultV2Adapter struct {
 	Type          VaultV2AdapterType `json:"type"`
@@ -35,8 +30,6 @@ type VaultV2Adapter struct {
 	// as a snapshot value from the last on-chain query.
 	RealAssets uint256.Int `json:"realAssets"`
 }
-
-func (a *VaultV2Adapter) baseAdapter() *VaultV2Adapter { return a }
 
 // VaultV2MorphoMarketV1AdapterV2 is the v2 adapter that allocates to Morpho Blue markets.
 // It uses marketIds and per-market supplyShares for position tracking.
@@ -66,19 +59,31 @@ type VaultV2MorphoVaultV1Adapter struct {
 	MorphoVaultV1 common.Address `json:"morphoVaultV1"`
 }
 
-// VaultV2AdapterEntry is a polymorphic wrapper that serializes any V2 adapter subtype
-// to JSON and deserializes it back using the "type" field as a discriminator.
-// Use this in maps/slices where mixed adapter types must roundtrip through JSON.
+// VaultV2AdapterEntry is a tagged-union wrapper for V2 adapter subtypes.
+// Exactly one pointer field is non-nil at any time.
 type VaultV2AdapterEntry struct {
-	Adapter IVaultV2Adapter
+	MorphoMarketV1AdapterV2 *VaultV2MorphoMarketV1AdapterV2 `json:"-"`
+	MorphoMarketV1Adapter   *VaultV2MorphoMarketV1Adapter   `json:"-"`
+	MorphoVaultV1Adapter    *VaultV2MorphoVaultV1Adapter    `json:"-"`
+	Unknown                 *VaultV2Adapter                 `json:"-"`
 }
 
 func (e VaultV2AdapterEntry) MarshalJSON() ([]byte, error) {
-	return json.Marshal(e.Adapter)
+	switch {
+	case e.MorphoMarketV1AdapterV2 != nil:
+		return json.Marshal(e.MorphoMarketV1AdapterV2)
+	case e.MorphoMarketV1Adapter != nil:
+		return json.Marshal(e.MorphoMarketV1Adapter)
+	case e.MorphoVaultV1Adapter != nil:
+		return json.Marshal(e.MorphoVaultV1Adapter)
+	case e.Unknown != nil:
+		return json.Marshal(e.Unknown)
+	default:
+		return []byte("null"), nil
+	}
 }
 
 func (e *VaultV2AdapterEntry) UnmarshalJSON(data []byte) error {
-	// Peek at the type field to determine the concrete type.
 	var peek struct {
 		Type VaultV2AdapterType `json:"type"`
 	}
@@ -87,37 +92,32 @@ func (e *VaultV2AdapterEntry) UnmarshalJSON(data []byte) error {
 	}
 	switch peek.Type {
 	case VaultV2AdapterTypeMorphoMarketV1AdapterV2:
-		var v VaultV2MorphoMarketV1AdapterV2
-		if err := json.Unmarshal(data, &v); err != nil {
-			return err
-		}
-		e.Adapter = &v
+		e.MorphoMarketV1AdapterV2 = new(VaultV2MorphoMarketV1AdapterV2)
+		return json.Unmarshal(data, e.MorphoMarketV1AdapterV2)
 	case VaultV2AdapterTypeMorphoMarketV1Adapter:
-		var v VaultV2MorphoMarketV1Adapter
-		if err := json.Unmarshal(data, &v); err != nil {
-			return err
-		}
-		e.Adapter = &v
+		e.MorphoMarketV1Adapter = new(VaultV2MorphoMarketV1Adapter)
+		return json.Unmarshal(data, e.MorphoMarketV1Adapter)
 	case VaultV2AdapterTypeMorphoVaultV1Adapter:
-		var v VaultV2MorphoVaultV1Adapter
-		if err := json.Unmarshal(data, &v); err != nil {
-			return err
-		}
-		e.Adapter = &v
+		e.MorphoVaultV1Adapter = new(VaultV2MorphoVaultV1Adapter)
+		return json.Unmarshal(data, e.MorphoVaultV1Adapter)
 	default:
-		var v VaultV2Adapter
-		if err := json.Unmarshal(data, &v); err != nil {
-			return err
-		}
-		e.Adapter = &v
+		e.Unknown = new(VaultV2Adapter)
+		return json.Unmarshal(data, e.Unknown)
 	}
-	return nil
 }
 
-// Base returns the base VaultV2Adapter fields regardless of the concrete type.
+// Base returns the shared VaultV2Adapter fields regardless of which variant is set.
 func (e *VaultV2AdapterEntry) Base() *VaultV2Adapter {
-	if e.Adapter == nil {
+	switch {
+	case e.MorphoMarketV1AdapterV2 != nil:
+		return &e.MorphoMarketV1AdapterV2.VaultV2Adapter
+	case e.MorphoMarketV1Adapter != nil:
+		return &e.MorphoMarketV1Adapter.VaultV2Adapter
+	case e.MorphoVaultV1Adapter != nil:
+		return &e.MorphoVaultV1Adapter.VaultV2Adapter
+	case e.Unknown != nil:
+		return e.Unknown
+	default:
 		return nil
 	}
-	return e.Adapter.baseAdapter()
 }
