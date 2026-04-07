@@ -9,9 +9,9 @@ import (
 type Erc20AllowanceRecipient string
 
 const (
-	Erc20AllowanceRecipientMorpho         Erc20AllowanceRecipient = "morpho"
-	Erc20AllowanceRecipientBundlerAdapter Erc20AllowanceRecipient = "bundler3.generalAdapter1"
-	Erc20AllowanceRecipientPermit2        Erc20AllowanceRecipient = "permit2"
+	Erc20AllowanceRecipientMorpho  Erc20AllowanceRecipient = "morpho"
+	Erc20AllowanceRecipientBundler Erc20AllowanceRecipient = "bundler"
+	Erc20AllowanceRecipientPermit2 Erc20AllowanceRecipient = "permit2"
 )
 
 // Permit2Allowance represents a Permit2 allowance

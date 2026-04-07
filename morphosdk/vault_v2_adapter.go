@@ -36,11 +36,12 @@ type VaultV2Adapter struct {
 type VaultV2MorphoMarketV1AdapterV2 struct {
 	VaultV2Adapter
 
-	Morpho           common.Address              `json:"morpho"`
 	AdaptiveCurveIrm common.Address              `json:"adaptiveCurveIrm"`
 	MarketIds        []common.Hash               `json:"marketIds"`
 	SupplyShares     map[common.Hash]uint256.Int `json:"supplyShares"`
-	SupplyAssets     map[common.Hash]uint256.Int `json:"supplyAssets"`
+	// Go-only enrichment fields; not present in TS IVaultV2MorphoMarketV1AdapterV2
+	Morpho       common.Address              `json:"morpho,omitempty"`
+	SupplyAssets map[common.Hash]uint256.Int `json:"supplyAssets,omitempty"`
 }
 
 // VaultV2MorphoMarketV1Adapter is the v1 adapter that allocates to Morpho Blue markets.

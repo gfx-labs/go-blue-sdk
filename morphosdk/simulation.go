@@ -18,10 +18,12 @@ type GlobalConfig struct {
 
 // VaultUser represents a user's interaction with a vault
 type VaultUser struct {
-	User        common.Address `json:"user"`
-	Vault       common.Address `json:"vault"`
-	IsAllocator bool           `json:"isAllocator"`
-	Allowance   uint256.Int    `json:"allowance"`
+	Address       common.Address `json:"address"`
+	Vault         common.Address `json:"vault"`
+	IsAuthorized  bool           `json:"isAuthorized"`
+	AllowedShares uint256.Int    `json:"allowedShares"`
+	AllowedAssets uint256.Int    `json:"allowedAssets"`
+	Shares        uint256.Int    `json:"shares"`
 }
 
 // InputSimulationState represents the input state for simulations

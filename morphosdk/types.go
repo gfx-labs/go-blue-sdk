@@ -5,9 +5,9 @@ type TransactionType string
 
 const (
 	TransactionTypeSupply             TransactionType = "Supply"
-	TransactionTypeSupplyCollateral   TransactionType = "Supply Collateral"
+	TransactionTypeSupplyCollateral   TransactionType = "SupplyCollateral"
 	TransactionTypeWithdraw           TransactionType = "Withdraw"
-	TransactionTypeWithdrawCollateral TransactionType = "Withdraw Collateral"
+	TransactionTypeWithdrawCollateral TransactionType = "WithdrawCollateral"
 	TransactionTypeBorrow             TransactionType = "Borrow"
 	TransactionTypeRepay              TransactionType = "Repay"
 )
@@ -16,11 +16,10 @@ const (
 type CapacityLimitReason string
 
 const (
-	CapacityLimitReasonLiquidity  CapacityLimitReason = "Liquidity"
-	CapacityLimitReasonBalance    CapacityLimitReason = "Balance"
-	CapacityLimitReasonPosition   CapacityLimitReason = "Position"
-	CapacityLimitReasonCollateral CapacityLimitReason = "Collateral"
-	CapacityLimitReasonCap        CapacityLimitReason = "Cap"
+	CapacityLimitReasonLiquidityLimit   CapacityLimitReason = "liquidityLimit"
+	CapacityLimitReasonUtilizationLimit CapacityLimitReason = "utilizationLimit"
+	CapacityLimitReasonSupplyCapLimit   CapacityLimitReason = "supplyCapLimit"
+	CapacityLimitReasonBorrowCapLimit   CapacityLimitReason = "borrowCapLimit"
 
 	// V2 vault capacity limits
 	CapacityLimitReasonVaultV2AbsoluteCap CapacityLimitReason = "VaultV2_AbsoluteCap"
