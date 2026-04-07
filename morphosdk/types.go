@@ -20,4 +20,8 @@ const (
 	CapacityLimitReasonUtilizationLimit CapacityLimitReason = "utilizationLimit"
 	CapacityLimitReasonSupplyCapLimit   CapacityLimitReason = "supplyCapLimit"
 	CapacityLimitReasonBorrowCapLimit   CapacityLimitReason = "borrowCapLimit"
+
+	// V2 vault capacity limits
+	CapacityLimitReasonVaultV2AbsoluteCapLimit CapacityLimitReason = "vaultV2AbsoluteCapLimit"
+	CapacityLimitReasonVaultV2RelativeCapLimit CapacityLimitReason = "vaultV2RelativeCapLimit"
 )
