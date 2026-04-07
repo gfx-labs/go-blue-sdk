@@ -18,6 +18,11 @@ const (
 	VaultV2AdapterTypeUnknown                 VaultV2AdapterType = "Unknown"
 )
 
+// IVaultV2Adapter is implemented by all V2 vault adapter types.
+type IVaultV2Adapter interface {
+	baseAdapter() *VaultV2Adapter
+}
+
 // VaultV2Adapter represents the base fields shared by all V2 vault adapters.
 type VaultV2Adapter struct {
 	Type          VaultV2AdapterType `json:"type"`
@@ -30,6 +35,8 @@ type VaultV2Adapter struct {
 	// as a snapshot value from the last on-chain query.
 	RealAssets uint256.Int `json:"realAssets"`
 }
+
+func (a *VaultV2Adapter) baseAdapter() *VaultV2Adapter { return a }
 
 // VaultV2MorphoMarketV1AdapterV2 is the v2 adapter that allocates to Morpho Blue markets.
 // It uses marketIds and per-market supplyShares for position tracking.
@@ -63,12 +70,7 @@ type VaultV2MorphoVaultV1Adapter struct {
 // to JSON and deserializes it back using the "type" field as a discriminator.
 // Use this in maps/slices where mixed adapter types must roundtrip through JSON.
 type VaultV2AdapterEntry struct {
-	// Adapter holds the concrete adapter value. It must be one of:
-	//   *VaultV2MorphoMarketV1AdapterV2
-	//   *VaultV2MorphoMarketV1Adapter
-	//   *VaultV2MorphoVaultV1Adapter
-	//   *VaultV2Adapter (for unknown types)
-	Adapter any
+	Adapter IVaultV2Adapter
 }
 
 func (e VaultV2AdapterEntry) MarshalJSON() ([]byte, error) {
@@ -114,16 +116,8 @@ func (e *VaultV2AdapterEntry) UnmarshalJSON(data []byte) error {
 
 // Base returns the base VaultV2Adapter fields regardless of the concrete type.
 func (e *VaultV2AdapterEntry) Base() *VaultV2Adapter {
-	switch v := e.Adapter.(type) {
-	case *VaultV2MorphoMarketV1AdapterV2:
-		return &v.VaultV2Adapter
-	case *VaultV2MorphoMarketV1Adapter:
-		return &v.VaultV2Adapter
-	case *VaultV2MorphoVaultV1Adapter:
-		return &v.VaultV2Adapter
-	case *VaultV2Adapter:
-		return v
-	default:
+	if e.Adapter == nil {
 		return nil
 	}
+	return e.Adapter.baseAdapter()
 }
