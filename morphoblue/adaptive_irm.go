@@ -63,7 +63,11 @@ func (irm *adaptiveIRM) ExpLibWExp(x *uint256.Int) *uint256.Int {
 	expR.Add(expR, r)
 	expR.Add(expR, WAD)
 
-	if q.Sign() == 0 {
+	// ExpLib: return q >= 0 ? expR << uint256(q) : expR >> uint256(-q);
+	// q is signed: Sign() >= 0 covers both zero and positive exponents. Treating
+	// only q == 0 as a left shift sent every positive q down the right-shift
+	// path with a negated (huge) shift, so wExp(x) returned 0 for x >= ~ln2/2.
+	if q.Sign() >= 0 {
 		expR.Lsh(expR, uint(q.Uint64()))
 		return expR
 	}
